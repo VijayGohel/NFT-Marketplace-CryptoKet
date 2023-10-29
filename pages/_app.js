@@ -1,7 +1,12 @@
-import '../styles/globals.css'
+import '../styles/globals.css';
+import { Navbar, Footer } from '../components';
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+const MyApp = ({ Component, pageProps }) => (
+  <div className="dark:bg-nft-dark bg-white min-h-screen">
+    <Navbar />
+    <Component {...pageProps} />
+    <Footer />
+  </div>
+);
 
-export default MyApp
+export default MyApp;
