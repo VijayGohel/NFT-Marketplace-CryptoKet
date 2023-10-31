@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/router';
 
 import images from '../assets';
+import { Button } from './index';
 
 const navLinks = {
   'Explore NFTs': '/',
@@ -25,9 +27,28 @@ const MenuItems = ({ isMobile, active, setActive }) => (
   </ul>
 );
 
+const ButtonGroup = ({ router, setActive }) => {
+  const connected = true;
+  return (
+    <Button
+      btnName={`${connected ? 'Create' : 'Connect'}`}
+      classStyles="mx-2 rounded-xl"
+      handleClick={() => {
+        if (connected) {
+          setActive('');
+          router.push('/create-nft');
+        } else {
+          console.log('Connect');
+        }
+      }}
+    />
+  );
+};
+
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [activeLink, setActiveLink] = useState('Explore NFTs');
+  const router = useRouter();
 
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 boder-nft-gray-1">
@@ -61,6 +82,9 @@ const Navbar = () => {
         </div>
         <div className="flex md:hidden">
           <MenuItems active={activeLink} setActive={setActiveLink} />
+          <div className="ml-4">
+            <ButtonGroup router={router} setActive={setActiveLink} />
+          </div>
         </div>
       </div>
     </nav>
