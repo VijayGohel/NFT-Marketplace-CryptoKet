@@ -48,6 +48,7 @@ const ButtonGroup = ({ router, setActive }) => {
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [activeLink, setActiveLink] = useState('Explore NFTs');
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
   return (
@@ -86,6 +87,28 @@ const Navbar = () => {
             <ButtonGroup router={router} setActive={setActiveLink} />
           </div>
         </div>
+      </div>
+
+      <div className="hidden md:flex ml-2">
+        <Image
+          src={isOpen ? images.cross : images.menu}
+          width={isOpen ? 20 : 25}
+          height={isOpen ? 20 : 25}
+          objectFit="contain"
+          alt="cross icon"
+          onClick={() => setIsOpen(!isOpen)}
+          className={theme === 'light' && 'filter invert'}
+        />
+        {isOpen && (
+          <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10 nav-h flex justify-between flex-col">
+            <div className="flex-1 p-4">
+              <MenuItems active={activeLink} setActive={setActiveLink} isMobile />
+            </div>
+            <div className="p-4 border-t dark:border-nft-black-1 border-nft-gray-1">
+              <ButtonGroup router={router} setActive={setActiveLink} />
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
