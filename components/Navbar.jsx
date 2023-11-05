@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
 
 import images from '../assets';
-import { Button } from './index';
+import Button from './Button';
 
 const navLinks = {
   'Explore NFTs': '/',
