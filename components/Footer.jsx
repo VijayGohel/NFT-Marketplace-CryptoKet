@@ -5,6 +5,15 @@ import { useTheme } from 'next-themes';
 import Images from '../assets';
 import Button from './Button';
 
+const FooterLinks = ({ heading, items }) => (
+  <div className="flex-1 justify-start items-start">
+    <h3 className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xl mb-10">{heading}</h3>
+    {items.map((item, index) => (
+      <p key={`item ${index}`} className="font-poppins dark:text-white text-nft-black-1 font-normal text-base cursor-pointer dark:hover:text-nft-gray-1 hover:text-nft-black-1 my-3">{item}</p>
+    ))}
+  </div>
+);
+
 const Footer = () => {
   const { theme, setTheme } = useTheme();
 
@@ -25,6 +34,10 @@ const Footer = () => {
               <Button btnName="Email me" classStyles="rounded-md" />
             </div>
           </div>
+        </div>
+        <div className="flex-1 flexBetweenStart flex-wrap ml-10 md:ml-0 md:mt-8">
+          <FooterLinks heading="CryptoKet" items={['Explore', 'How it works', 'Contact us']} />
+          <FooterLinks heading="Support" items={['Help Center', 'Terms of Service', 'Legal', 'Privacy Policy']} />
         </div>
       </div>
       <div className="flexCenter w-full mt-5 border-t dark:border-nft-black-1 border-nft-gray-1 sm:px-4 px-16">
