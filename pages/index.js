@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
@@ -10,6 +10,37 @@ const Home = () => {
   const parentRef = useRef(null);
   const scrollRef = useRef(null);
   const { theme } = useTheme();
+  const [hideButtons, setHideButtons] = useState(false);
+
+  const handleScroll = (direction) => {
+    const { current } = scrollRef;
+
+    const scrollAmount = window?.innerWidth > 1800 ? 270 : 210;
+
+    if (direction === 'left') {
+      current.scrollLeft -= scrollAmount;
+    } else {
+      current.scrollLeft += scrollAmount;
+    }
+  };
+
+  const isScrollable = () => {
+    const { current } = scrollRef;
+    const { current: parent } = parentRef;
+
+    const scrollable = current?.scrollWidth >= parent?.offsetWidth;
+    setHideButtons(!scrollable);
+  };
+
+  useEffect(() => {
+    isScrollable();
+    window?.addEventListener('resize', isScrollable);
+
+    return () => {
+      window?.removeEventListener('resize', isScrollable);
+    };
+  }, []);
+
   return (
     <div className="flex justify-center sm:px-4 p-12">
       <div className="w-full minmd:w-4/5">
@@ -22,7 +53,7 @@ const Home = () => {
         <div>
           <h1 className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg-text-4xl font-semibold ml-4 xs:ml-0">Best Creators</h1>
 
-          <div className="relative flex-1 max-w-full flex-mt-3" ref={parentRef}>
+          <div className="relative flex-1 max-w-full flex mt-3" ref={parentRef}>
             <div className="flex flex-row w-max overflow-x-scroll no-scrollbar select-none" ref={scrollRef}>
               {
                 [6, 7, 8, 9, 10].map((i) => (
@@ -35,24 +66,31 @@ const Home = () => {
                   />
                 ))
               }
-              <div className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 left-0 cursor-pointer">
-                <Image
-                  src={Images.left}
-                  layout="fill"
-                  objectFit="contain"
-                  alt="left-arrow"
-                  className={theme === 'light' && 'invert filter'}
-                />
-              </div>
-              <div className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 right-0 cursor-pointer">
-                <Image
-                  src={Images.right}
-                  layout="fill"
-                  objectFit="contain"
-                  alt="left-arrow"
-                  className={theme === 'light' && 'invert filter'}
-                />
-              </div>
+              {!hideButtons
+                && (
+                  <>
+                    <div className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 left-0 cursor-pointer">
+                      <Image
+                        src={Images.left}
+                        layout="fill"
+                        objectFit="contain"
+                        alt="left-arrow"
+                        className={theme === 'light' && 'invert filter'}
+                        onClick={() => handleScroll('left')}
+                      />
+                    </div>
+                    <div className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 right-0 cursor-pointer">
+                      <Image
+                        src={Images.right}
+                        layout="fill"
+                        objectFit="contain"
+                        alt="left-arrow"
+                        className={theme === 'light' && 'invert filter'}
+                        onClick={() => handleScroll('right')}
+                      />
+                    </div>
+                  </>
+                )}
             </div>
           </div>
         </div>
