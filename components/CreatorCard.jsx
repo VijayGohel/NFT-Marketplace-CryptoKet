@@ -5,8 +5,8 @@ import Images from '../assets';
 
 const CreatorCard = ({ rank, creatorImage, creatorName, creatorEths }) => (
   <div className="min-w-190 minlg:min-w-240 dark:bg-nft-black-3 bg-white border dark:border-nft-black-3 border-nft-gray-1 rounded-3xl flex flex-col p-4 m-4">
-    <div>
-      <p>{rank}</p>
+    <div className="w-8 h-8 minlg:w-10 minlg:h-10 flexCenter bg-nft-red-violet rounded-full">
+      <p className="font-poppins font-semibold text-white minlg:text-lg text-base">{rank}</p>
     </div>
 
     <div className="my-2 flex justify-center">
@@ -27,6 +27,11 @@ const CreatorCard = ({ rank, creatorImage, creatorName, creatorEths }) => (
           />
         </div>
       </div>
+    </div>
+
+    <div className="mt-3 minlg:mt-7 text-center flexCenter flex-col font-poppins font-semibold text-base dark:text-white text-nft-black-1">
+      <p>{creatorName}</p>
+      <p className="mt-1">{creatorEths} <span className="font-normal">ETH</span></p>
     </div>
   </div>
 );
