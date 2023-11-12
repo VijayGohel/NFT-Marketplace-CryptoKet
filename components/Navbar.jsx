@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 
 import images from '../assets';
 import Button from './Button';
+import { NFTContext } from '../context/NFTContext';
 
 const navLinks = {
   'Explore NFTs': '/',
@@ -28,17 +29,18 @@ const MenuItems = ({ isMobile, active, setActive }) => (
 );
 
 const ButtonGroup = ({ router, setActive }) => {
-  const connected = true;
+  const { currentAccount, connectWallet } = useContext(NFTContext);
+
   return (
     <Button
-      btnName={`${connected ? 'Create' : 'Connect'}`}
+      btnName={`${currentAccount ? 'Create' : 'Connect'}`}
       classStyles="mx-2 rounded-xl"
       handleClick={() => {
-        if (connected) {
+        if (currentAccount) {
           setActive('');
           router.push('/create-nft');
         } else {
-          console.log('Connect');
+          connectWallet();
         }
       }}
     />
