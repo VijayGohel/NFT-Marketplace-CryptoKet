@@ -112,4 +112,60 @@ contract NFTMarketplace is ERC721URIStorage {
         payable(owner).transfer(listingPrice);
         payable(idToMarketItem[tokenId].seller).transfer(msg.value);
     }
+
+    function fetchMarketItems() public view returns(MarketItem[] memory) {
+        uint256 unsoldItems = _tokenIds.current() - _itemsSold.current();
+        MarketItem[] memory items = new MarketItem[](unsoldItems);
+        uint256 curIndex = 0;
+        for(uint i=0;i<unsoldItems;i++) {
+            if(idToMarketItem[i+1].owner == address(this)) {
+                items[curIndex] = idToMarketItem[i+1];
+                curIndex+=1;
+            }
+        }
+
+        return items;
+    }
+
+    function fetchMyNFTs() public view returns(MarketItem[] memory) {
+        uint256 itemsCount = 0;
+        uint256 curIndex = 0;
+
+        for(uint i=0;i<_tokenIds.current();i++) {
+            if(idToMarketItem[i+1].owner == msg.sender){
+                itemsCount += 1;
+            }
+        }
+
+        MarketItem[] memory items = new MarketItem[](itemsCount);
+        for(uint i=0;i<itemsCount;i++) {
+            if(idToMarketItem[i+1].owner == msg.sender) {
+                items[curIndex] = idToMarketItem[i+1];
+                curIndex+=1;
+            }
+        }
+
+        return items;
+    }
+
+    function fetchItemsListed() public view returns(MarketItem[] memory) {
+        uint256 itemsCount = 0;
+        uint256 curIndex = 0;
+
+        for(uint i=0;i<_tokenIds.current();i++) {
+            if(idToMarketItem[i+1].seller == msg.sender){
+                itemsCount += 1;
+            }
+        }
+
+        MarketItem[] memory items = new MarketItem[](itemsCount);
+        for(uint i=0;i<itemsCount;i++) {
+            if(idToMarketItem[i+1].seller == msg.sender) {
+                items[curIndex] = idToMarketItem[i+1];
+                curIndex+=1;
+            }
+        }
+
+        return items;
+    }
 }
