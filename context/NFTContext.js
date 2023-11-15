@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useStorageUpload } from '@thirdweb-dev/react';
 
 export const NFTContext = React.createContext();
 
@@ -33,8 +34,28 @@ export const NFTProvider = ({ children }) => {
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
+
+  const { mutateAsync: upload } = useStorageUpload();
+
+  const uploadToIpfs = async (file) => {
+    let url = '';
+    try {
+      url = await upload({
+        data: file,
+        options: {
+          uploadWithGatewayUrl: true,
+          uploadWithoutDirectory: true,
+        },
+      });
+    } catch (error) {
+      console.log('Error uploading to IPFS.', error);
+    }
+
+    return url;
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs }}>
       {children}
     </NFTContext.Provider>
   );
