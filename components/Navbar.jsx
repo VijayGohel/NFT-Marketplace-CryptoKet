@@ -99,7 +99,7 @@ const Navbar = () => {
           objectFit="contain"
           alt="cross icon"
           onClick={() => setIsOpen(!isOpen)}
-          className={theme === 'light' && 'filter invert'}
+          className={theme === 'light' ? 'filter invert' : null}
         />
         {isOpen && (
           <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10 nav-h flex justify-between flex-col">

@@ -54,7 +54,7 @@ const Footer = () => {
                   width={24}
                   height={24}
                   alt={`social logo ${index}`}
-                  className={theme === 'light' && 'filter invert'}
+                  className={theme === 'light' ? 'filter invert' : null}
                 />
               </div>
             ))}

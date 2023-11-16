@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useStorageUpload } from '@thirdweb-dev/react';
+import Web3Modal from 'web3modal';
+import { ethers } from 'ethers';
+
+import { MARKET_ADDRESS_ABI } from './constants';
 
 export const NFTContext = React.createContext();
+
+const fetchContract = (singerOrProvider) => new ethers.Contract(process.env.NEXT_PUBLIC_MARKET_ADDRESS, MARKET_ADDRESS_ABI, singerOrProvider);
 
 export const NFTProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState(null);
@@ -37,25 +43,54 @@ export const NFTProvider = ({ children }) => {
 
   const { mutateAsync: upload } = useStorageUpload();
 
-  const uploadToIpfs = async (file) => {
+  const uploadToIpfs = async (data) => {
     let url = '';
     try {
       url = await upload({
-        data: file,
+        data,
         options: {
           uploadWithGatewayUrl: true,
           uploadWithoutDirectory: true,
         },
       });
     } catch (error) {
-      console.log('Error uploading to IPFS.', error);
+      console.error('Error uploading to IPFS.', error);
     }
 
     return url;
   };
 
+  const createSale = async (url, inputPrice) => {
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const price = ethers.utils.parseUnits(inputPrice, 'ether');
+    const contract = fetchContract(signer);
+    const listingPrice = await contract.getListingPrice();
+    const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
+
+    await transaction.wait();
+  };
+
+  const createNFT = async (formInput, fileUrl, router) => {
+    try {
+      const { name, description, price } = formInput;
+      if (!name || !description || !price || !router) return;
+
+      const data = JSON.stringify({ name, description, image: fileUrl });
+      const url = await uploadToIpfs([data]);
+      await createSale(url[0], price);
+
+      router.push('/');
+    } catch (error) {
+      console.error('Error creating NFT', error);
+    }
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT }}>
       {children}
     </NFTContext.Provider>
   );

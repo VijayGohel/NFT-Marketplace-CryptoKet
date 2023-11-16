@@ -75,7 +75,7 @@ const Home = () => {
                         layout="fill"
                         objectFit="contain"
                         alt="left-arrow"
-                        className={theme === 'light' && 'invert filter'}
+                        className={theme === 'light' ? 'invert filter' : null}
                         onClick={() => handleScroll('left')}
                       />
                     </div>
@@ -85,7 +85,7 @@ const Home = () => {
                         layout="fill"
                         objectFit="contain"
                         alt="left-arrow"
-                        className={theme === 'light' && 'invert filter'}
+                        className={theme === 'light' ? 'invert filter' : null}
                         onClick={() => handleScroll('right')}
                       />
                     </div>
