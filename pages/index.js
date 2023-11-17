@@ -12,6 +12,7 @@ const Home = () => {
   const scrollRef = useRef(null);
   const { theme } = useTheme();
   const [hideButtons, setHideButtons] = useState(false);
+  const [nfts, setNfts] = useState([]);
 
   const { fetchNFTs } = useContext(NFTContext);
 
@@ -39,7 +40,7 @@ const Home = () => {
     isScrollable();
     window?.addEventListener('resize', isScrollable);
 
-    fetchNFTs().then((items) => console.log(items));
+    fetchNFTs().then((items) => setNfts(items));
 
     return () => {
       window?.removeEventListener('resize', isScrollable);
@@ -106,19 +107,7 @@ const Home = () => {
             <div>Searchbar</div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-              <NFTCard
-                key={`NFT-${i}`}
-                nft={{
-                  i,
-                  name: `Nifty NFT ${i}`,
-                  price: (10 - i * 0.532).toFixed(2),
-                  seller: `0x${makeId(3)}...${makeId(4)}`,
-                  owner: `0x${makeId(3)}...${makeId(4)}`,
-                  description: 'Cool NFT on Sale',
-                }}
-              />
-            ))}
+            {nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)}
           </div>
         </div>
       </div>

@@ -66,7 +66,7 @@ const CreateNFT = () => {
 
             {fileUrl && (
               <aside>
-                <div>
+                <div className="mt-5">
                   <img src={fileUrl} alt="asset-file" />
                 </div>
               </aside>
