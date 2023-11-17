@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useStorageUpload } from '@thirdweb-dev/react';
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
+import axios from 'axios';
 
 import { MARKET_ADDRESS_ABI } from './constants';
 
@@ -89,8 +90,38 @@ export const NFTProvider = ({ children }) => {
     }
   };
 
+  const fetchNFTs = async () => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider();
+      const contract = await fetchContract(provider);
+
+      const data = await contract.fetchMarketItems();
+
+      const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+        const tokenURI = await contract.tokenURI(tokenId);
+        const { data: { image, name, description } } = await axios.get(tokenURI);
+        const price = ethers.utils.formatUnits(unformattedPrice, 'ether');
+
+        return {
+          price,
+          tokenId: tokenId.toNumber(),
+          seller,
+          owner,
+          image,
+          name,
+          description,
+          tokenURI,
+        };
+      }));
+
+      return items;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs }}>
       {children}
     </NFTContext.Provider>
   );

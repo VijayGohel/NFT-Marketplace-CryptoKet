@@ -1,16 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
 import Images from '../assets';
 import { makeId } from '../utils/makeId';
 import { Banner, CreatorCard, NFTCard } from '../components';
+import { NFTContext } from '../context/NFTContext';
 
 const Home = () => {
   const parentRef = useRef(null);
   const scrollRef = useRef(null);
   const { theme } = useTheme();
   const [hideButtons, setHideButtons] = useState(false);
+
+  const { fetchNFTs } = useContext(NFTContext);
 
   const handleScroll = (direction) => {
     const { current } = scrollRef;
@@ -35,6 +38,8 @@ const Home = () => {
   useEffect(() => {
     isScrollable();
     window?.addEventListener('resize', isScrollable);
+
+    fetchNFTs().then((items) => console.log(items));
 
     return () => {
       window?.removeEventListener('resize', isScrollable);
