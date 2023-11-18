@@ -40,7 +40,7 @@ const Home = () => {
     isScrollable();
     window?.addEventListener('resize', isScrollable);
 
-    fetchNFTs().then((items) => setNfts(items));
+    fetchNFTs().then((items) => setNfts(items || []));
 
     return () => {
       window?.removeEventListener('resize', isScrollable);
@@ -107,7 +107,7 @@ const Home = () => {
             <div>Searchbar</div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)}
+            {nfts?.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)}
           </div>
         </div>
       </div>
