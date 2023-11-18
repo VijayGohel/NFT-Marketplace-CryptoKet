@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import { Banner, Loader, NFTCard } from '../components';
@@ -8,8 +8,15 @@ import { NFTContext } from '../context/NFTContext';
 
 const MyNFTs = () => {
   const [nfts, setNfts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const { currentAccount } = useContext(NFTContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const { currentAccount, fetchListedNFTsOrMyNFTs } = useContext(NFTContext);
+
+  useEffect(() => {
+    fetchListedNFTsOrMyNFTs('myNFTs').then((items) => {
+      setNfts(items || []);
+      setIsLoading(false);
+    });
+  }, []);
 
   if (isLoading) {
     return (

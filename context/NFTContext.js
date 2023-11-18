@@ -124,7 +124,7 @@ export const NFTProvider = ({ children }) => {
     }
   };
 
-  const fetchListedNFTs = async () => {
+  const fetchListedNFTsOrMyNFTs = async (type) => {
     try {
       const web3modal = new Web3Modal();
       const connection = await web3modal.connect();
@@ -133,7 +133,7 @@ export const NFTProvider = ({ children }) => {
 
       const contract = fetchContract(signer);
 
-      const data = await contract.fetchItemsListed();
+      const data = type === 'myNFTs' ? await contract.fetchMyNFTs() : await contract.fetchItemsListed();
       const items = await formatResponse(data, contract);
       return items;
     } catch (error) {
@@ -142,7 +142,7 @@ export const NFTProvider = ({ children }) => {
   };
 
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTs }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs }}>
       {children}
     </NFTContext.Provider>
   );
