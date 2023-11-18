@@ -10,7 +10,7 @@ import { NFTContext } from '../context/NFTContext';
 
 const navLinks = {
   'Explore NFTs': '/',
-  'Listed NFTs': '/created-nfts',
+  'Listed NFTs': '/listed-nfts',
   'My NFTs': '/my-nfts',
 };
 
