@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { Button, Loader } from '../components';
+import { Button, Loader, Modal } from '../components';
 import Images from '../assets';
 import { shortenAddress } from '../utils/shortenAddress';
 import { NFTContext } from '../context/NFTContext';
@@ -80,6 +80,13 @@ const NFTDetails = () => {
             )}
         </div>
       </div>
+
+      <Modal
+        header="Check Out"
+        body="body"
+        footer="footer"
+        handleClose={() => {}}
+      />
     </div>
   );
 };
