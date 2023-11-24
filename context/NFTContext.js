@@ -61,14 +61,18 @@ export const NFTProvider = ({ children }) => {
     return url;
   };
 
-  const createSale = async (url, inputPrice) => {
+  const getContract = async () => {
     const web3modal = new Web3Modal();
     const connection = await web3modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
-
-    const price = ethers.utils.parseUnits(inputPrice, 'ether');
     const contract = fetchContract(signer);
+    return contract;
+  };
+
+  const createSale = async (url, inputPrice) => {
+    const price = ethers.utils.parseUnits(inputPrice, 'ether');
+    const contract = await getContract();
     const listingPrice = await contract.getListingPrice();
     const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
 
@@ -113,9 +117,7 @@ export const NFTProvider = ({ children }) => {
 
   const fetchNFTs = async () => {
     try {
-      const provider = new ethers.providers.JsonRpcProvider();
-      const contract = await fetchContract(provider);
-
+      const contract = await getContract();
       const data = await contract.fetchMarketItems();
       const items = await formatResponse(data, contract);
       return items;
@@ -126,13 +128,7 @@ export const NFTProvider = ({ children }) => {
 
   const fetchListedNFTsOrMyNFTs = async (type) => {
     try {
-      const web3modal = new Web3Modal();
-      const connection = await web3modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-      const signer = provider.getSigner();
-
-      const contract = fetchContract(signer);
-
+      const contract = await getContract();
       const data = type === 'myNFTs' ? await contract.fetchMyNFTs() : await contract.fetchItemsListed();
       const items = await formatResponse(data, contract);
       return items;
@@ -141,8 +137,19 @@ export const NFTProvider = ({ children }) => {
     }
   };
 
+  const buyNFT = async (nft) => {
+    try {
+      const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
+      const contract = await getContract();
+      const transaction = await contract.createMarketSale(nft.tokenId, { value: price });
+      await transaction.wait();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs, buyNFT }}>
       {children}
     </NFTContext.Provider>
   );
