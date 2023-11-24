@@ -70,11 +70,13 @@ export const NFTProvider = ({ children }) => {
     return contract;
   };
 
-  const createSale = async (url, inputPrice) => {
+  const createSale = async (url, inputPrice, isReslling, id) => {
     const price = ethers.utils.parseUnits(inputPrice, 'ether');
     const contract = await getContract();
     const listingPrice = await contract.getListingPrice();
-    const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
+    const transaction = !isReslling
+      ? await contract.createToken(url, price, { value: listingPrice.toString() })
+      : await contract.resellToken(id, price, { value: listingPrice.toString() });
 
     await transaction.wait();
   };
@@ -149,7 +151,7 @@ export const NFTProvider = ({ children }) => {
   };
 
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs, buyNFT }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs, buyNFT, createSale }}>
       {children}
     </NFTContext.Provider>
   );
