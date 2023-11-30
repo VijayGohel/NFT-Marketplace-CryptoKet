@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
 import Images from '../assets';
-import { makeId } from '../utils/makeId';
+import { getTopCreators } from '../utils/getTopCreators';
 import { Banner, CreatorCard, NFTCard } from '../components';
 import { NFTContext } from '../context/NFTContext';
+import { shortenAddress } from '../utils/shortenAddress';
 
 const Home = () => {
   const parentRef = useRef(null);
@@ -13,6 +14,7 @@ const Home = () => {
   const { theme } = useTheme();
   const [hideButtons, setHideButtons] = useState(false);
   const [nfts, setNfts] = useState([]);
+  const [topCreators, setTopCreators] = useState([]);
 
   const { fetchNFTs } = useContext(NFTContext);
 
@@ -35,6 +37,10 @@ const Home = () => {
     const scrollable = current?.scrollWidth >= parent?.offsetWidth;
     setHideButtons(!scrollable);
   };
+
+  useEffect(() => {
+    setTopCreators(getTopCreators(nfts) || []);
+  }, [nfts]);
 
   useEffect(() => {
     isScrollable();
@@ -62,13 +68,13 @@ const Home = () => {
           <div className="relative flex-1 max-w-full flex mt-3" ref={parentRef}>
             <div className="flex flex-row w-max overflow-x-scroll no-scrollbar select-none" ref={scrollRef}>
               {
-                [6, 7, 8, 9, 10].map((i) => (
+                topCreators.map((creator, i) => (
                   <CreatorCard
-                    key={`creator-${i}`}
-                    rank={i}
-                    creatorImage={Images[`creator${i}`]}
-                    creatorName={`0x${makeId(3)}...${makeId(4)}`}
-                    creatorEths={10 - i * 0.5}
+                    key={creator.seller}
+                    rank={i + 1}
+                    creatorImage={Images[`creator${i + 1}`]}
+                    creatorName={shortenAddress(creator.seller)}
+                    creatorEths={creator.price}
                   />
                 ))
               }
