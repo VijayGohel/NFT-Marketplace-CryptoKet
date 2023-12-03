@@ -4,21 +4,29 @@ import Image from 'next/image';
 import { Banner, Loader, NFTCard, SearchBar } from '../components';
 import Images from '../assets';
 import { shortenAddress } from '../utils/shortenAddress';
+import { sortNfts, sortingFunctions } from '../utils/sortNfts';
 import { NFTContext } from '../context/NFTContext';
 
 const MyNFTs = () => {
   const [nfts, setNfts] = useState([]);
   const [copyNfts, setCopyNfts] = useState(nfts);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeSelect, setActiveSelect] = useState(Object.keys(sortingFunctions)[0]);
   const { currentAccount, fetchListedNFTsOrMyNFTs } = useContext(NFTContext);
 
   useEffect(() => {
     fetchListedNFTsOrMyNFTs('myNFTs').then((items) => {
-      setNfts(items || []);
-      setCopyNfts(items || []);
+      const sortedNfts = sortNfts(items, activeSelect);
+      setNfts(sortedNfts || []);
+      setCopyNfts(sortedNfts || []);
       setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    const sortedNfts = sortNfts(nfts, activeSelect);
+    setNfts(sortedNfts);
+  }, [activeSelect]);
 
   const onHandleSearch = (value) => {
     const filteredNfts = copyNfts.filter((nft) => nft.name.toLowerCase().includes(value.toLowerCase()));
@@ -65,7 +73,7 @@ const MyNFTs = () => {
       ) : (
         <div className="sm:px-4 p-12 w-full minmd:w-4/5 flexCenter flex-col">
           <div className="flex flex-1 flex-row w-full sm:flex-col px-4 xs:px-0 minlg:px-8">
-            <SearchBar onHandleSearch={onHandleSearch} onClearSearch={onClearSearch} />
+            <SearchBar onHandleSearch={onHandleSearch} onClearSearch={onClearSearch} activeSelect={activeSelect} setActiveSelect={setActiveSelect} />
           </div>
           <div className="mt-3 w-full flex flex-wrap">
             {nfts?.map((nft) => <NFTCard key={nft.tokenId} nft={nft} onProfilePage />)}

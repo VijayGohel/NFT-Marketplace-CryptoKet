@@ -4,9 +4,10 @@ import { useTheme } from 'next-themes';
 
 import Images from '../assets';
 import { getTopCreators } from '../utils/getTopCreators';
-import { Banner, CreatorCard, NFTCard } from '../components';
+import { Banner, CreatorCard, NFTCard, SearchBar } from '../components';
 import { NFTContext } from '../context/NFTContext';
 import { shortenAddress } from '../utils/shortenAddress';
+import { sortNfts, sortingFunctions } from '../utils/sortNfts';
 
 const Home = () => {
   const parentRef = useRef(null);
@@ -14,7 +15,9 @@ const Home = () => {
   const { theme } = useTheme();
   const [hideButtons, setHideButtons] = useState(false);
   const [nfts, setNfts] = useState([]);
+  const [copyNfts, setCopyNfts] = useState(nfts);
   const [topCreators, setTopCreators] = useState([]);
+  const [activeSelect, setActiveSelect] = useState(Object.keys(sortingFunctions)[0]);
 
   const { fetchNFTs } = useContext(NFTContext);
 
@@ -39,19 +42,37 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setTopCreators(getTopCreators(nfts) || []);
-  }, [nfts]);
+    setTopCreators(getTopCreators(copyNfts) || []);
+  }, [copyNfts]);
+
+  useEffect(() => {
+    const sortedNfts = sortNfts(nfts, activeSelect);
+    setNfts(sortedNfts);
+  }, [activeSelect]);
 
   useEffect(() => {
     isScrollable();
     window?.addEventListener('resize', isScrollable);
 
-    fetchNFTs().then((items) => setNfts(items || []));
+    fetchNFTs().then((items) => {
+      const sortedNfts = sortNfts(items, activeSelect);
+      setNfts(sortedNfts || []);
+      setCopyNfts(sortedNfts || []);
+    });
 
     return () => {
       window?.removeEventListener('resize', isScrollable);
     };
   }, []);
+
+  const onHandleSearch = (value) => {
+    const filteredNfts = copyNfts.filter((nft) => nft.name.toLowerCase().includes(value.toLowerCase()));
+    if (filteredNfts.length) { setNfts(filteredNfts); } else { setNfts(copyNfts); }
+  };
+
+  const onClearSearch = () => {
+    setNfts(copyNfts);
+  };
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
@@ -110,7 +131,14 @@ const Home = () => {
         <div className="mt-10">
           <div className="flexBetween mx-4 xs:mx-0 minlg:mx-8 sm:flex-col sm:items-start">
             <h1 className="flex-1 before:first:font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4">Hot Bids</h1>
-            <div>Searchbar</div>
+            <div className="flex-2 flex flex-row sm:flex-col sm:w-full">
+              <SearchBar
+                activeSelect={activeSelect}
+                setActiveSelect={setActiveSelect}
+                onClearSearch={onClearSearch}
+                onHandleSearch={onHandleSearch}
+              />
+            </div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {nfts?.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)}
