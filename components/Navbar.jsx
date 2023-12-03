@@ -14,11 +14,14 @@ const navLinks = {
   'My NFTs': '/my-nfts',
 };
 
-const MenuItems = ({ isMobile, active, setActive }) => (
+const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => (
   <ul className={`list-none flexCenter flex-row ${isMobile && 'flex-col h-full'}`}>
     {Object.keys(navLinks).map((item, index) => (
       <li
-        onClick={() => setActive(item)}
+        onClick={() => {
+          setActive(item);
+          if (isMobile) { setIsOpen(false); }
+        }}
         key={`${item} ${index}`}
         className={`flex flex-row items-center font-poppins font-semibold text-base dark:hover:text-white hover:text-nft-dark mx-3 ${active === item ? 'dark:text-white text-nft-black-1' : 'dark:text-nft-gray-3 text-nft-gray-2'}`}
       >
@@ -28,7 +31,7 @@ const MenuItems = ({ isMobile, active, setActive }) => (
   </ul>
 );
 
-const ButtonGroup = ({ router, setActive }) => {
+const ButtonGroup = ({ router, setActive, setIsOpen }) => {
   const { currentAccount, connectWallet } = useContext(NFTContext);
 
   return (
@@ -38,6 +41,7 @@ const ButtonGroup = ({ router, setActive }) => {
       handleClick={() => {
         if (currentAccount) {
           setActive('');
+          if (setIsOpen) { setIsOpen(false); }
           router.push('/create-nft');
         } else {
           connectWallet();
@@ -49,7 +53,7 @@ const ButtonGroup = ({ router, setActive }) => {
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
-  const [activeLink, setActiveLink] = useState('Explore NFTs');
+  const [activeLink, setActiveLink] = useState(Object.keys(navLinks)[0]);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -65,7 +69,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    setTheme('light');
+    if (!localStorage.getItem('theme')) { setTheme('dark'); }
   }, []);
 
   useEffect(() => {
@@ -82,7 +86,7 @@ const Navbar = () => {
           </div>
         </Link>
         <Link href="/">
-          <div className="hidden md:flex">
+          <div className="hidden md:flex" onClick={() => setIsOpen(false)}>
             <Image src={images.logo02} width={32} height={32} alt="brand logo" />
           </div>
         </Link>
@@ -123,10 +127,10 @@ const Navbar = () => {
         {isOpen && (
           <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10 nav-h flex justify-between flex-col">
             <div className="flex-1 p-4">
-              <MenuItems active={activeLink} setActive={setActiveLink} isMobile />
+              <MenuItems active={activeLink} setActive={setActiveLink} isMobile setIsOpen={setIsOpen} />
             </div>
             <div className="p-4 border-t dark:border-nft-black-1 border-nft-gray-1">
-              <ButtonGroup router={router} setActive={setActiveLink} />
+              <ButtonGroup router={router} setActive={setActiveLink} setIsOpen={setIsOpen} />
             </div>
           </div>
         )}
