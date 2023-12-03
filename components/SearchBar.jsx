@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
 import Images from '../assets';
 
-const SearchBar = () => {
-  const [setsearchText, setSearchText] = useState('');
+const SearchBar = ({ onHandleSearch, onClearSearch }) => {
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [toggle, setToggle] = useState(false);
   const theme = useTheme();
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setSearch(debouncedSearch), 1000);
+
+    return () => clearTimeout(timeout);
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    if (search) { onHandleSearch(search); } else { onClearSearch(); }
+  }, [search]);
 
   return (
     <>
@@ -24,8 +35,8 @@ const SearchBar = () => {
           type="text"
           placeholder="Seach NFT here..."
           className="dark:bg-nft-black-2 bg-white mx-4 w-full dark:text-white text-nft-black-1 font-normal text-xs outline-none"
-          onChange={() => {}}
-          value=""
+          onChange={(e) => setDebouncedSearch(e.target.value || '')}
+          value={debouncedSearch}
         />
       </div>
       <div onClick={() => setToggle((prev) => !prev)} className="relative flexBetween ml-4 sm:ml-0 sm:mt-2 min-w-190 cursor-pointer dark:bg-nft-black-2 bg-white border dark:border-nft-black-2 border-nft-gray-2 px-4 rounded-md">
