@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
@@ -52,6 +52,25 @@ const Navbar = () => {
   const [activeLink, setActiveLink] = useState('Explore NFTs');
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+
+  const checkActive = (pathName) => {
+    let active = '';
+    Object.entries(navLinks).forEach((entry) => {
+      if (entry[1] === pathName) {
+        active = entry[0];
+      }
+    });
+
+    setActiveLink(active);
+  };
+
+  useEffect(() => {
+    setTheme('light');
+  }, []);
+
+  useEffect(() => {
+    checkActive(router.pathname);
+  }, [router.pathname]);
 
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 boder-nft-gray-1">
