@@ -16,5 +16,5 @@ export const getTopCreators = (nfts) => {
     return { seller, price };
   });
 
-  return topCreators.sort((a, b) => a.price > b.price);
+  return topCreators.sort((a, b) => (a.price < b.price ? 1 : -1));
 };
