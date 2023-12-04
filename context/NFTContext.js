@@ -12,6 +12,7 @@ const fetchContract = (singerOrProvider) => new ethers.Contract(process.env.NEXT
 
 export const NFTProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState(null);
+  const [isLoadingNFT, setIsLoadingNFT] = useState(false);
   const nftCurrency = 'ETH';
 
   const checkIfWalletIsConnected = async () => {
@@ -78,6 +79,7 @@ export const NFTProvider = ({ children }) => {
       ? await contract.createToken(url, price, { value: listingPrice.toString() })
       : await contract.resellToken(id, price, { value: listingPrice.toString() });
 
+    setIsLoadingNFT(true);
     await transaction.wait();
   };
 
@@ -119,6 +121,7 @@ export const NFTProvider = ({ children }) => {
 
   const fetchNFTs = async () => {
     try {
+      setIsLoadingNFT(false);
       const contract = await getContract();
       const data = await contract.fetchMarketItems();
       const items = await formatResponse(data, contract);
@@ -130,6 +133,7 @@ export const NFTProvider = ({ children }) => {
 
   const fetchListedNFTsOrMyNFTs = async (type) => {
     try {
+      setIsLoadingNFT(false);
       const contract = await getContract();
       const data = type === 'myNFTs' ? await contract.fetchMyNFTs() : await contract.fetchItemsListed();
       const items = await formatResponse(data, contract);
@@ -144,14 +148,16 @@ export const NFTProvider = ({ children }) => {
       const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
       const contract = await getContract();
       const transaction = await contract.createMarketSale(nft.tokenId, { value: price });
+      setIsLoadingNFT(true);
       await transaction.wait();
+      setIsLoadingNFT(false);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs, buyNFT, createSale }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIpfs, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs, buyNFT, createSale, isLoadingNFT }}>
       {children}
     </NFTContext.Provider>
   );

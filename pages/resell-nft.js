@@ -10,8 +10,7 @@ const ResellNFT = () => {
   const router = useRouter();
   const [nftDetails, setNFTDetails] = useState({ tokenId: '', tokenURI: '', image: '' });
   const [price, setPrice] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const { createSale } = useContext(NFTContext);
+  const { createSale, isLoadingNFT } = useContext(NFTContext);
 
   const fetchNFT = async () => {
     if (!nftDetails.tokenURI) return;
@@ -28,7 +27,6 @@ const ResellNFT = () => {
 
   useEffect(() => {
     fetchNFT();
-    setIsLoading(false);
   }, [nftDetails.tokenURI]);
 
   const resell = async () => {
@@ -36,7 +34,7 @@ const ResellNFT = () => {
     router.push('/');
   };
 
-  if (isLoading) {
+  if (isLoadingNFT) {
     return (
       <div className="flexStart min-h-screen">
         <Loader />
