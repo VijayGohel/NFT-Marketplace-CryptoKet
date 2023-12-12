@@ -5,7 +5,7 @@ export const sortingFunctions = {
 };
 
 export const sortNfts = (nfts, option) => {
-  const sortedNft = JSON.parse(JSON.stringify(nfts)) || [];
+  const sortedNft = JSON.parse(JSON.stringify(nfts || [])) || [];
   sortedNft.sort(sortingFunctions[option]);
   return sortedNft;
 };

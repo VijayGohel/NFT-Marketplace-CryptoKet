@@ -6,7 +6,7 @@ import '../styles/globals.css';
 import { Navbar, Footer } from '../components';
 import { NFTProvider } from '../context/NFTContext';
 
-const activeChainId = ChainId.Localhost;
+const activeChainId = ChainId.Goerli;
 
 const MyApp = ({ Component, pageProps }) => (
   <ThirdwebProvider desiredChainId={activeChainId} clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}>
