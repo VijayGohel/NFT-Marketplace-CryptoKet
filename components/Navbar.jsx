@@ -59,9 +59,9 @@ const Navbar = () => {
 
   const checkActive = (pathName) => {
     let active = '';
-    Object.entries(navLinks).forEach((entry) => {
-      if (entry[1] === pathName) {
-        active = entry[0];
+    Object.entries(navLinks).forEach(([DisplayName, URL]) => {
+      if (URL === pathName) {
+        active = DisplayName;
       }
     });
 

@@ -1,11 +1,8 @@
 export const getTopCreators = (nfts) => {
   const creators = nfts.reduce((creatorObj, nft) => {
-    if (!creatorObj[nft.seller]) {
-      creatorObj[nft.seller] = [];
-    }
-    const creator = creatorObj[nft.seller];
+    const creator = creatorObj[nft.seller] || [];
     creator.push(nft);
-    return creatorObj;
+    return { ...creatorObj, [nft.seller]: creator };
   }, {});
 
   const topCreators = Object.keys(creators).map((creator) => {
