@@ -5,6 +5,7 @@ import { Banner, Loader, NFTCard, SearchBar } from '../components';
 import Images from '../assets';
 import { shortenAddress } from '../utils/shortenAddress';
 import { sortNfts, sortingFunctions } from '../utils/sortNfts';
+import { hexToDecimal } from '../utils/hexToDecimal';
 import { NFTContext } from '../context/NFTContext';
 
 const MyNFTs = () => {
@@ -57,7 +58,7 @@ const MyNFTs = () => {
         <div className="flexCenter flex-col -mt-20 z-0">
           <div className="w-40 h-40 sm:w-36 sm:h-36 p-1 rounded-full bg-nft-black-2">
             <Image
-              src={Images.creator1}
+              src={Images[`creator${hexToDecimal(currentAccount)}`]}
               className="rounded-full object-cover"
               objectFit="cover"
             />

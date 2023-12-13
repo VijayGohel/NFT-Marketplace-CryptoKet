@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { Button, Loader, Modal } from '../components';
 import Images from '../assets';
 import { shortenAddress } from '../utils/shortenAddress';
+import { hexToDecimal } from '../utils/hexToDecimal';
 import { NFTContext } from '../context/NFTContext';
 
 const PaymentBody = ({ nft, nftCurrency }) => (
@@ -87,7 +88,7 @@ const NFTDetails = () => {
           <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs minlg:text-base">Creator</p>
           <div className="flex flex-row items-center mt-3">
             <div className="relative w-12 h-12 minlg:w-20 minlg:h-20 mr-2">
-              <Image src={Images.creator1} objectFit="cover" className="rounded-full" />
+              <Image src={Images[`creator${hexToDecimal(nft.seller)}`]} objectFit="cover" className="rounded-full" />
             </div>
             <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xs minlg:text-base">{shortenAddress(nft.seller)}</p>
           </div>

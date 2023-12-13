@@ -8,6 +8,7 @@ import { Banner, CreatorCard, Loader, NFTCard, SearchBar } from '../components';
 import { NFTContext } from '../context/NFTContext';
 import { shortenAddress } from '../utils/shortenAddress';
 import { sortNfts, sortingFunctions } from '../utils/sortNfts';
+import { hexToDecimal } from '../utils/hexToDecimal';
 
 const Home = () => {
   const parentRef = useRef(null);
@@ -99,7 +100,7 @@ const Home = () => {
                       <CreatorCard
                         key={creator.seller}
                         rank={i + 1}
-                        creatorImage={Images[`creator${i + 1}`]}
+                        creatorImage={Images[`creator${hexToDecimal(creator.seller)}`]}
                         creatorName={shortenAddress(creator.seller)}
                         creatorEths={creator.price}
                       />

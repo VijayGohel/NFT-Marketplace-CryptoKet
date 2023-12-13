@@ -13,7 +13,7 @@ export const getTopCreators = (nfts) => {
     const sellerNfts = creators[creator];
     const price = sellerNfts.reduce((prev, cur) => prev + Number(cur.price), 0);
 
-    return { seller, price };
+    return { seller, price: price.toFixed(4) };
   });
 
   return topCreators.sort((a, b) => (a.price < b.price ? 1 : -1));
