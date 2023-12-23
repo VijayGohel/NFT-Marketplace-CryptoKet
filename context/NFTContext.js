@@ -15,6 +15,8 @@ export const NFTProvider = ({ children }) => {
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
   const nftCurrency = 'ETH';
 
+  console.log('NFT Provider');
+
   const checkIfWalletIsConnected = async () => {
     if (!window.ethereum) {
       return alert('Please install MetaMask!');
@@ -40,6 +42,7 @@ export const NFTProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    console.log('NFT Provider - use effect');
     checkIfWalletIsConnected();
   }, []);
 
