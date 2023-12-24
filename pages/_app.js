@@ -8,25 +8,22 @@ import { NFTProvider } from '../context/NFTContext';
 
 const activeChainId = ChainId.Goerli;
 
-const MyApp = ({ Component, pageProps }) => {
-  console.log(process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID, process.env.NEXT_PUBLIC_MARKET_ADDRESS);
-  return (
-    <ThirdwebProvider desiredChainId={activeChainId} clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}>
-      <NFTProvider>
-        <ThemeProvider attribute="class">
-          <div className="dark:bg-nft-dark bg-white min-h-screen">
-            <Navbar />
-            <div className="pt-65">
-              <Component {...pageProps} />
-            </div>
-            <Footer />
+const MyApp = ({ Component, pageProps }) => (
+  <ThirdwebProvider desiredChainId={activeChainId} clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}>
+    <NFTProvider>
+      <ThemeProvider attribute="class">
+        <div className="dark:bg-nft-dark bg-white min-h-screen">
+          <Navbar />
+          <div className="pt-65">
+            <Component {...pageProps} />
           </div>
+          <Footer />
+        </div>
 
-          <Script src="https://kit.fontawesome.com/5946e66caa.js" crossorigin="anonymous" />
-        </ThemeProvider>
-      </NFTProvider>
-    </ThirdwebProvider>
-  );
-};
+        <Script src="https://kit.fontawesome.com/5946e66caa.js" crossorigin="anonymous" />
+      </ThemeProvider>
+    </NFTProvider>
+  </ThirdwebProvider>
+);
 
 export default MyApp;

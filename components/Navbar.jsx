@@ -69,7 +69,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    console.log('Navbar');
     if (!localStorage.getItem('theme')) { setTheme('dark'); }
   }, []);
 
